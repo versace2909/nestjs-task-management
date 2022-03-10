@@ -6,10 +6,11 @@ import {
   Param,
   Post,
   Put,
+  Query,
 } from '@nestjs/common';
-import { ApiProperty } from '@nestjs/swagger';
 import { CreateTaskDto, UpdateTaskDto } from './createTaskDto';
-import { Task } from './task.model';
+import { Task } from './entities/task.entity';
+import { GetTaskFilterDto } from './get-task-filter.dto';
 import { TasksService } from './tasks.service';
 
 @Controller('tasks')
@@ -17,21 +18,18 @@ export class TasksController {
   constructor(private taskService: TasksService) {}
 
   @Get()
-  getAllTasks() {
-    return this.taskService.getAllTasks();
+  getAllTasks(@Query() taskFilter?: GetTaskFilterDto) {
+    return this.taskService.getAllTasks(taskFilter);
   }
 
   @Get('/:id')
-  getTaskById(@Param('id') id: string) {
+  getTaskById(@Param('id') id: string): Promise<Task> {
     return this.taskService.getTaskById(id);
   }
 
   @Post()
-  createTask(@Body() createTaskDto: CreateTaskDto): Task {
-    return this.taskService.createTask(
-      createTaskDto.title,
-      createTaskDto.description,
-    );
+  createTask(@Body() createTaskDto: CreateTaskDto): Promise<Task> {
+    return this.taskService.createTask(createTaskDto);
   }
 
   @Delete('/:id')
@@ -40,7 +38,7 @@ export class TasksController {
   }
 
   @Put()
-  updateTask(@Body() task: UpdateTaskDto) {
+  updateTask(@Body() task: UpdateTaskDto): Promise<Task> {
     return this.taskService.updateTask(task);
   }
 }
