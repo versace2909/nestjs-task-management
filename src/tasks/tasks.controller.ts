@@ -17,8 +17,8 @@ import { GetTaskFilterDto } from './get-task-filter.dto';
 import { TasksService } from './tasks.service';
 
 @ApiTags('tasks')
-@Controller('tasks')
 @ApiBearerAuth()
+@Controller('tasks')
 @UseGuards(AuthGuard('jwt'))
 export class TasksController {
   constructor(private taskService: TasksService) {}
